@@ -1,1 +1,18 @@
 <h1>Bienvenido, {{ request.user }} 🧑‍🎓</h1>
+
+<div>
+    <hr>
+
+    <h2>Clases disponibles:</h2>
+    <ul>
+        {% for class in classes %}
+            <li>
+                Nombre: {{ class.name }} |
+                Descripción: {{ class.description }} |
+                Categoría: {{ class.category }} |
+                Precio: {{ class.price }}
+            </li>
+        {% endfor %}
+    </ul>
+
+</div>

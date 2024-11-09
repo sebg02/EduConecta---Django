@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from .forms import UserForm, StudentForm, TeacherForm, ClassForm, AvailabilityForm
-from .models import TeacherProfile, StudentProfile
+from .models import TeacherProfile, StudentProfile, Classes
 from .decorators import unauthenticated_user, redirecter_based_on_group
 
 
@@ -92,7 +92,9 @@ def home(request):
 
         return render(request, 'home.html', context)
 
-    return render(request, 'home.html', {'role': user_role})
+    classes = Classes.objects.all()
+    context = {'role': user_role, 'classes': classes}    
+    return render(request, 'home.html', context)
 
 
 # EDIT TEACHER PROFILE VIEW
@@ -170,6 +172,7 @@ def create_class(request):
 
             teacher = TeacherProfile.objects.get(user=request.user)         
             new_class.location = teacher.location
+            new_class.teacher = teacher
             new_class = class_form.save()
 
             teacher.list_of_classes.add(new_class)
