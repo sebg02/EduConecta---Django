@@ -1,0 +1,15 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+<form action="" method="POST">
+    {% csrf_token %}
+    <p>¿Estás seguro de querer eliminar tu cuenta?</p>
+    <a href="{% url "home" %}" class="btn btn-secondary">Volver</a>
+    <button type="submit" class="btn btn-danger" >Eliminar cuenta</button>
+    
+
+</form>
+{{ error }}
+ 
+{% endblock  %}

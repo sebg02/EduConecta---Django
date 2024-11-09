@@ -1,0 +1,23 @@
+<header>
+    <nav>
+        <ul>
+            {% if user.is_authenticated %}
+                <li><a href="{% url "home" %}">Home</a></li>
+                <li><a href="{% url "log_out" %}">Cerrar sesión</a></li>
+                <li><a href="{% url "delete-user" %}">Eliminar perfil</a></li>
+                {% for group in request.user.groups.all %}
+                    {% if group.name == "Students" %}
+                        <li><a href="{% url "edit-student" %}">Editar perfil</a></li>
+                    {% elif group.name == "Teachers" %}
+                        <li><a href="{% url "edit-teacher" %}">Editar perfil</a></li>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <li><a href="{% url "index" %}">Inicio</a></li>
+                <li><a href="{% url "log_in" %}">Iniciar sesión</a></li>
+                <li><a href="{% url "sign_in" %}">Registrarse</a></li>
+
+            {% endif %}
+        </ul>
+    </nav>
+</header>

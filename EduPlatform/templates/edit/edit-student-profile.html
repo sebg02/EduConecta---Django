@@ -1,0 +1,11 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+    <h1>Editar perfil</h1>
+    <p>Modifique sus datos</p>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Guardar">
+    </form>
+{% endblock  %}
