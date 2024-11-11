@@ -141,8 +141,8 @@ class AvailabilityForm(forms.ModelForm):
             'end_time': 'Hora de fin'
         }
         widgets = {
-            'start_time': forms.TimeInput(format='%H:%M', attrs={'type': 'time'}),
-            'end_time': forms.TimeInput(format='%H:%M', attrs={'type': 'time'}),
+            'start_time': forms.TimeInput(format='%H:%M', attrs={'type': 'time', 'step': 3600, 'min':'07:00', 'max':'19:00'}),
+            'end_time': forms.TimeInput(format='%H:%M', attrs={'type': 'time', 'step': 3600, 'min':'07:00', 'max':'19:00'}),
         }
 
 

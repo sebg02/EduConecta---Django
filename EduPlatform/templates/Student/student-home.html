@@ -4,15 +4,41 @@
     <hr>
 
     <h2>Clases disponibles:</h2>
-    <ul>
-        {% for class in classes %}
-            <li>
-                Nombre: {{ class.name }} |
-                Descripción: {{ class.description }} |
-                Categoría: {{ class.category }} |
-                Precio: {{ class.price }}
-            </li>
-        {% endfor %}
-    </ul>
 
+    <div>
+        <p>Agregar filtros de:</p>
+        <ul>
+            <li>Buscar tutores por materia (nombre de la clase)  </li>
+            <li>Buscar tutores por nivel Educativo</li>
+            <li>Buscar tutores por are geográfica</li>
+            <li>Buscar tutores por disponibilidad</li>
+        </ul>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for class in classes %}
+            <div class="col">
+                <div class="card" style="width: 100%;">
+                    <div class="card-body">
+                        <h5 class="card-title"> <b> {{ class.name }} </b></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ class.get_category_display }}</h6>
+                        <p class="card-text">{{ class.description }}</p>
+                        <p class="card-teacher">Profesor:  <i>{{ class.teacher }}</i></p>
+                        <p class="card-price">Precio: ${{ class.price|floatformat:0 }}</p>
+
+                        <h6>Disponibilidad:</h6>
+                        <ul>
+                            {% for availability in class.availabilities.all %}
+                                <li>{{ availability.get_days_display }}: {{ availability.start_time }} - {{ availability.end_time }}</li>
+                            {% empty %}
+                                <li>No hay disponibilidad programada.</li>
+                            {% endfor %}
+                        </ul>
+
+                        <button class="btn btn-primary w-100">Solicitar Clase</button>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>    
 </div>

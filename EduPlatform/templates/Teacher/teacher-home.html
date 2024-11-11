@@ -6,15 +6,37 @@
     <hr>
 
     <h2>Mis clases:</h2>
-    <ul>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         {% for class in classes %}
-            <li>
-                Nombre: {{ class.name }} |
-                Descripción: {{ class.description }} |
-                Categoría: {{ class.category }} |
-                Precio: {{ class.price }}
-            </li>
+            <div class="col">
+                <div class="card" style="width: 100%;">
+                    <div class="card-body">
+                        <h5 class="card-title"> <b> {{ class.name }} </b></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ class.get_category_display }}</h6>
+                        <p class="card-text">{{ class.description }}</p>
+                        <p class="card-price">Precio: ${{ class.price|floatformat:0 }}</p>
+
+                        <h6>Disponibilidad:</h6>
+                        <ul>
+                            {% for availability in class.availabilities.all %}
+                                <li>{{ availability.get_days_display }}: {{ availability.start_time }} - {{ availability.end_time }}</li>
+                            {% empty %}
+                                <li>No hay disponibilidad programada.</li>
+                            {% endfor %}
+                        </ul>
+
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-secondary w-48">Editar</button>
+                            <form action="{% url "delete-class" class.id %}" method="POST">
+                                {% csrf_token %}
+                                <button class="btn btn-danger w-48"> Eliminar</button>
+                            </form>
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+            
         {% endfor %}
-    </ul>
+    </div>
 
 </div>

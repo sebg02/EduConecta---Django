@@ -25,12 +25,12 @@ def sign_in(request):
             try:
                 new_user = form.save()
                 login(request, new_user)
-                redirect_complementary_forms(request, new_user)
+                return redirect_complementary_forms(request, new_user)
             except Exception as e:
-                print(f"{e}")
+                print(e)
                 return render(request, 'signin.html',
                               {'error': 'Ha ocurrido un error'})
-        return render(request, 'signin.html', {form: form})
+        return render(request, 'signin.html', {'form': form})
 
 
 # LOG IN
@@ -49,10 +49,8 @@ def log_in(request):
                           {'error': "Usuario o contraseña incorrecta"})
         else:
             login(request, user)
-            print(f"________________________ USUARIO: {user}")
             if user.groups.filter(name="Teachers").exists():
                 teacher = TeacherProfile.objects.get(user=user)
-                print(f"{teacher}:>20")
                 if not teacher.years_of_experience:
                     return redirect_complementary_forms(request, user)
                 else:
@@ -155,6 +153,7 @@ def delete_user(request):
 # ---------------------------- CLASSES MANAGEMENT ----------------------------
 
 
+# CREAR CLASE
 @login_required
 @redirecter_based_on_group(allowed_roles=["Teachers"])
 def create_class(request):
@@ -188,4 +187,35 @@ def create_class(request):
             'av_form': AvailabilityForm()
         })
 
+
+# EDITAR CLASE
+@login_required
+@redirecter_based_on_group(allowed_roles=["Teachers"])
+def edit_class(request, class_id):
+    pass
+
+
+# ELIMINAR CLASE
+@login_required
+@redirecter_based_on_group(allowed_roles=["Teachers"])
+def delete_class(request, class_id):
+    if request.method == "POST":
+        class_to_delete = Classes.objects.get(id=class_id)
+        class_to_delete.delete()
+        return redirect("home")
+
+
+# ADMINISTRAR REGISTRO EN CLASES
+@login_required
+@redirecter_based_on_group(allowed_roles=["Teachers"])
+def handle_enrollment_request(request):
+    pass
+
         
+# ENVIAR SOLICITUD DE REGISTRO A CLASE
+@login_required
+@redirecter_based_on_group(allowed_roles=["Students"])
+def send_enrollment_request(request):
+    pass
+
+
