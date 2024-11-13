@@ -1,0 +1,26 @@
+<form method="GET" action="{% url "filter-classes" %}" class="container mt-4">
+    <div class="row align-items-end">
+        <div class="col-md-3 mb-3">
+            <input type="search" class="form-control" name="className" placeholder="Buscar por materia">
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <select class="form-select" aria-label="Nivel educativo del profesor" name="educationalLevel">
+                <option value="" disabled selected>Elige un nivel educativo</option>
+                <option value="basic">Bachillerato</option>
+                <option value="technical">Técnica</option>
+                <option value="technological">Tecnológico</option>
+                <option value="BD">Profesional</option>
+                <option value="PD">Posgrado</option>
+            </select>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <input type="search" class="form-control" placeholder="Buscar por ciudad" name="cityName">
+        </div>
+
+        <div class="col-auto mb-3">
+            <button class="btn btn-primary" type="submit">Filtrar</button>
+        </div>
+    </div>
+</form>

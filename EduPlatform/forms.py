@@ -127,6 +127,13 @@ class ClassForm(forms.ModelForm):
             'price' : 'Precio'
         }
 
+        def clean(self):
+            cleaned_data = super().clean()
+            name = cleaned_data.get('name')
+
+            if name:
+                cleaned_data['name'] = name.capitalize()
+            return cleaned_data            
     
 
 

@@ -205,6 +205,32 @@ def delete_class(request, class_id):
         return redirect("home")
 
 
+# FILTRAR CLASES
+@login_required
+def filter_classes(request):
+    response = request.GET
+    class_name = response.get('className')
+    city_name = response.get('cityName')
+    educational_level = response.get('educationalLevel')
+    
+    classes = Classes.objects.all()
+
+    if class_name:
+        classes = classes.filter(name__icontains=class_name)
+    if educational_level:
+        classes = classes.filter(teacher__educational_level=educational_level)
+    if city_name:
+        classes = classes.filter(location__city__icontains=city_name)
+    
+
+    return render(request, "home.html", {'role': "Students",'classes': classes})
+
+
+        
+
+
+
+
 # ADMINISTRAR REGISTRO EN CLASES
 @login_required
 @redirecter_based_on_group(allowed_roles=["Teachers"])

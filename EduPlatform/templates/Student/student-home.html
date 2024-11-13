@@ -15,6 +15,9 @@
         </ul>
     </div>
 
+    {% include "layouts/filters.html" %}
+
+
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         {% for class in classes %}
             <div class="col">
@@ -24,6 +27,7 @@
                         <h6 class="card-subtitle mb-2 text-muted">{{ class.get_category_display }}</h6>
                         <p class="card-text">{{ class.description }}</p>
                         <p class="card-teacher">Profesor:  <i>{{ class.teacher }}</i></p>
+                        <p class="card-teacher">Ubicación:  <i>{{ class.location }}</i></p>
                         <p class="card-price">Precio: ${{ class.price|floatformat:0 }}</p>
 
                         <h6>Disponibilidad:</h6>
