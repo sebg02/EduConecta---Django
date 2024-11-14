@@ -82,4 +82,17 @@ class Classes(models.Model):
         return f"{self.name}"
     
 
+class ClassRequest(models.Model):
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(TeacherProfile, on_delete=models.CASCADE)
+    requested_class = models.ForeignKey(Classes, on_delete=models.CASCADE)
+    status = models.CharField(
+        max_length=10,
+        choices=[('pending', 'Pendiente'), ('accepted', 'Aceptada'), ('rejected', ('Rechazada'))],
+        default='pending'
+    )
+    
+    def __str__(self):
+        return f"Solicitud de {self.student.user.username} para {self.requested_class.name} con {self.teacher.user.username}"
+
 

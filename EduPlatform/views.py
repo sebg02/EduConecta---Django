@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from .forms import UserForm, StudentForm, TeacherForm, ClassForm, AvailabilityForm
-from .models import TeacherProfile, StudentProfile, Classes
+from .models import TeacherProfile, StudentProfile, Classes, ClassRequest
 from .decorators import unauthenticated_user, redirecter_based_on_group
 
 
@@ -83,16 +83,30 @@ def log_out(request):
 @login_required
 def home(request):
     user_role = [group.name for group in request.user.groups.all()]
+    requested_classes = ClassRequest.objects.values_list('requested_class', flat=True)
+
     if "Teachers" in user_role:
         teacher = TeacherProfile.objects.get(user=request.user)
-        classes = teacher.list_of_classes.all()
-        context = {'role': user_role, 'classes': classes}
+        classes = teacher.list_of_classes.exclude(id__in=requested_classes)
+        class_requests = ClassRequest.objects.filter(requested_class__teacher=teacher)
 
+        context = {
+            'role': user_role,
+            'classes': classes,
+            'class_requests': class_requests,
+        }
         return render(request, 'home.html', context)
 
-    classes = Classes.objects.all()
-    context = {'role': user_role, 'classes': classes}    
+    classes = Classes.objects.exclude(id__in=requested_classes)  
+    class_requests = ClassRequest.objects.all()
+    context = {
+        'role': user_role,
+        'classes': classes,
+        'class_requests': class_requests,
+    }
     return render(request, 'home.html', context)
+
+
 
 
 # EDIT TEACHER PROFILE VIEW
@@ -207,6 +221,7 @@ def delete_class(request, class_id):
 
 # FILTRAR CLASES
 @login_required
+@redirecter_based_on_group(allowed_roles=["Students"])
 def filter_classes(request):
     response = request.GET
     class_name = response.get('className')
@@ -221,27 +236,36 @@ def filter_classes(request):
         classes = classes.filter(teacher__educational_level=educational_level)
     if city_name:
         classes = classes.filter(location__city__icontains=city_name)
-    
+
 
     return render(request, "home.html", {'role': "Students",'classes': classes})
 
-
         
+# ENVIAR SOLICITUD DE REGISTRO A CLASE
+@login_required
+@redirecter_based_on_group(allowed_roles=["Students"])
+def send_enrollment_request(request, class_id):
+    if request.method == "POST":
+        student = StudentProfile.objects.get(user=request.user)
+        requested_class = Classes.objects.get(id=class_id)
+        ClassRequest.objects.create(
+            student=student,
+            teacher=requested_class.teacher,
+            requested_class=requested_class
+        )
 
-
+        print(student, requested_class)
+        return redirect('index')
+    
 
 
 # ADMINISTRAR REGISTRO EN CLASES
 @login_required
 @redirecter_based_on_group(allowed_roles=["Teachers"])
 def handle_enrollment_request(request):
-    pass
-
-        
-# ENVIAR SOLICITUD DE REGISTRO A CLASE
-@login_required
-@redirecter_based_on_group(allowed_roles=["Students"])
-def send_enrollment_request(request):
-    pass
-
-
+    if request.method == "POST":
+        response = request.POST.status
+        if response == "accepted":
+            pass
+        elif response == "rejected":
+            pass

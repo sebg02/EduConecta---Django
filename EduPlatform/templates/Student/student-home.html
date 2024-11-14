@@ -3,46 +3,48 @@
 <div>
     <hr>
 
+    {% if my_classes %}
+        <h2>Mis clases:</h2>
+        
+    {% endif %}
     <h2>Clases disponibles:</h2>
-
-    <div>
-        <p>Agregar filtros de:</p>
-        <ul>
-            <li>Buscar tutores por materia (nombre de la clase)  </li>
-            <li>Buscar tutores por nivel Educativo</li>
-            <li>Buscar tutores por are geográfica</li>
-            <li>Buscar tutores por disponibilidad</li>
-        </ul>
-    </div>
 
     {% include "layouts/filters.html" %}
 
-
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-        {% for class in classes %}
+    {% if not classes  %}
+        <p class="alert alert-warning text-center mt-5" role="alert">No hay clases que coincidan con el filtro de búsqueda ¯\_(ツ)_/¯</p>
+    {% else %}
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mt-3">
+            {% for class in classes %}
             <div class="col">
-                <div class="card" style="width: 100%;">
-                    <div class="card-body">
-                        <h5 class="card-title"> <b> {{ class.name }} </b></h5>
-                        <h6 class="card-subtitle mb-2 text-muted">{{ class.get_category_display }}</h6>
-                        <p class="card-text">{{ class.description }}</p>
-                        <p class="card-teacher">Profesor:  <i>{{ class.teacher }}</i></p>
-                        <p class="card-teacher">Ubicación:  <i>{{ class.location }}</i></p>
-                        <p class="card-price">Precio: ${{ class.price|floatformat:0 }}</p>
-
-                        <h6>Disponibilidad:</h6>
-                        <ul>
-                            {% for availability in class.availabilities.all %}
+                    <div class="card" style="width: 100%;">
+                        <div class="card-body">
+                            <h5 class="card-title"> <b> {{ class.name }} </b></h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ class.get_category_display }}</h6>
+                            <p class="card-text">{{ class.description }}</p>
+                            <p class="card-teacher">Profesor:  <i>{{ class.teacher }}</i></p>
+                            <p class="card-teacher">Ubicación:  <i>{{ class.location }}</i></p>
+                            <p class="card-price">Precio: ${{ class.price|floatformat:0 }}</p>
+                            
+                            <h6>Disponibilidad:</h6>
+                            <ul>
+                                {% for availability in class.availabilities.all %}
                                 <li>{{ availability.get_days_display }}: {{ availability.start_time }} - {{ availability.end_time }}</li>
-                            {% empty %}
+                                {% empty %}
                                 <li>No hay disponibilidad programada.</li>
-                            {% endfor %}
-                        </ul>
-
-                        <button class="btn btn-primary w-100">Solicitar Clase</button>
+                                {% endfor %}
+                            </ul>
+                            
+                            <form action="{% url "send-enrollment-request" class.id %}" method="POST">
+                                {% csrf_token %}
+                                <button class="btn btn-primary w-100" type="submit">Solicitar Clase</button>
+                            </form>
+                        </div>
                     </div>
-                </div>
             </div>
-        {% endfor %}
-    </div>    
+            {% endfor %}
+        </div>    
+    {% endif %}
+
+
 </div>

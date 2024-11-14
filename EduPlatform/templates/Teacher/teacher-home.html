@@ -4,39 +4,56 @@
     <a href="{% url "create-class" %}"   class="btn btn-primary">Crear clase</a>
 
     <hr>
-
-    <h2>Mis clases:</h2>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-        {% for class in classes %}
-            <div class="col">
-                <div class="card" style="width: 100%;">
-                    <div class="card-body">
-                        <h5 class="card-title"> <b> {{ class.name }} </b></h5>
-                        <h6 class="card-subtitle mb-2 text-muted">{{ class.get_category_display }}</h6>
-                        <p class="card-text">{{ class.description }}</p>
-                        <p class="card-price">Precio: ${{ class.price|floatformat:0 }}</p>
-
-                        <h6>Disponibilidad:</h6>
-                        <ul>
-                            {% for availability in class.availabilities.all %}
-                                <li>{{ availability.get_days_display }}: {{ availability.start_time }} - {{ availability.end_time }}</li>
-                            {% empty %}
-                                <li>No hay disponibilidad programada.</li>
-                            {% endfor %}
-                        </ul>
-
-                        <div class="d-flex justify-content-between">
-                            <button class="btn btn-secondary w-48">Editar</button>
-                            <form action="{% url "delete-class" class.id %}" method="POST">
-                                {% csrf_token %}
-                                <button class="btn btn-danger w-48"> Eliminar</button>
-                            </form>
-                        </div>                        
-                    </div>
-                </div>
-            </div>
-            
-        {% endfor %}
+    <h2>Gestión de solicitud de clases:</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mt-3">
+      {% for class_r in class_requests %}
+      <div class="col">
+        <div class="card" style="width: 100%;">
+          <div class="card-body">
+            <h5 class="card-title"> <b> {{ class_r.requested_class.name }} </b></h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ class_r.requested_class.get_category_display }}</h6>
+            <p> Estudiante: {{ class_r.student }} </p>
+            <p class="card-price">Precio: ${{ class_r.requested_class.price|floatformat:0 }}</p>
+            <form action="" class="d-flex justify-content-between">
+              <button class="btn btn-danger w-48"> Rechazar</button>
+              <button class="btn btn-success w-48"> Aceptar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
     </div>
 
+    <h2 class="mt-5">Mis clases:</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mt-3">
+      {% for class in classes %}
+        <div class="col">
+          <div class="card" style="width: 100%;">
+            <div class="card-body">
+              <h5 class="card-title"> <b> {{ class.name }} </b></h5>
+              <h6 class="card-subtitle mb-2 text-muted">{{ class.get_category_display }}</h6>
+              <p class="card-text">{{ class.description }}</p>
+              <p class="card-price">Precio: ${{ class.price|floatformat:0 }}</p>
+
+              <h6>Disponibilidad:</h6>
+              <ul>
+                {% for availability in class.availabilities.all %}
+                  <li>{{ availability.get_days_display }}: {{ availability.start_time }} - {{ availability.end_time }}</li>
+                {% empty %}
+                  <li>No hay disponibilidad programada.</li>
+                {% endfor %}
+              </ul>
+
+              <div class="d-flex justify-content-between">
+                  <form action="{% url "delete-class" class.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-danger w-48"> Eliminar</button>
+                  </form>
+                  <button class="btn btn-secondary w-48">Editar</button>
+              </div>                        
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
 </div>
