@@ -5,24 +5,31 @@
 
     <hr>
     <h2>Gestión de solicitud de clases:</h2>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mt-3">
-      {% for class_r in class_requests %}
-      <div class="col">
-        <div class="card" style="width: 100%;">
-          <div class="card-body">
-            <h5 class="card-title"> <b> {{ class_r.requested_class.name }} </b></h5>
-            <h6 class="card-subtitle mb-2 text-muted">{{ class_r.requested_class.get_category_display }}</h6>
-            <p> Estudiante: {{ class_r.student }} </p>
-            <p class="card-price">Precio: ${{ class_r.requested_class.price|floatformat:0 }}</p>
-            <form action="" class="d-flex justify-content-between">
-              <button class="btn btn-danger w-48"> Rechazar</button>
-              <button class="btn btn-success w-48"> Aceptar</button>
-            </form>
+    {% if not classes_requests %}
+      <p>Todavía no hay solicitudes de clases.</p>
+    {% else %}
+    
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mt-3">
+        {% for class_r in class_requests %}
+        <div class="col">
+          <div class="card" style="width: 100%;">
+            <div class="card-body">
+              <h5 class="card-title"> <b> {{ class_r.requested_class.name }} </b></h5>
+              <h6 class="card-subtitle mb-2 text-muted">{{ class_r.requested_class.get_category_display }}</h6>
+              <p> Estudiante: {{ class_r.student }} </p>
+              <p class="card-price">Precio: ${{ class_r.requested_class.price|floatformat:0 }}</p>
+              <form method="POST" action="{% url "handle-enrollment-request" %}" class="d-flex justify-content-between">
+                {% csrf_token %}
+                <input type="hidden" name="class_request_id" value="{{ class_r.id }}">  
+                <button class="btn btn-danger w-48" type="submit" name="status" value="rejected"> Rechazar</button>
+                <button class="btn btn-success w-48" type="submit" name="status" value="accepted"> Aceptar</button>
+              </form>
+            </div>
           </div>
         </div>
+        {% endfor %}
       </div>
-      {% endfor %}
-    </div>
+    {% endif %}
 
     <h2 class="mt-5">Mis clases:</h2>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mt-3">

@@ -88,7 +88,10 @@ def home(request):
     if "Teachers" in user_role:
         teacher = TeacherProfile.objects.get(user=request.user)
         classes = teacher.list_of_classes.exclude(id__in=requested_classes)
-        class_requests = ClassRequest.objects.filter(requested_class__teacher=teacher)
+        class_requests = ClassRequest.objects.filter(
+            requested_class__teacher=teacher, 
+            status='pending'
+        )
 
         context = {
             'role': user_role,
@@ -102,7 +105,7 @@ def home(request):
     context = {
         'role': user_role,
         'classes': classes,
-        'class_requests': class_requests,
+        'my_classes': class_requests,
     }
     return render(request, 'home.html', context)
 
@@ -254,7 +257,6 @@ def send_enrollment_request(request, class_id):
             requested_class=requested_class
         )
 
-        print(student, requested_class)
         return redirect('index')
     
 
@@ -264,8 +266,18 @@ def send_enrollment_request(request, class_id):
 @redirecter_based_on_group(allowed_roles=["Teachers"])
 def handle_enrollment_request(request):
     if request.method == "POST":
-        response = request.POST.status
-        if response == "accepted":
-            pass
-        elif response == "rejected":
-            pass
+        class_request_id = request.POST.get('class_request_id')
+        response = request.POST.get('status')
+
+        try:
+            class_request = ClassRequest.objects.get(id=class_request_id)
+            if response == "accepted":
+                class_request.status = "accepted"
+            elif response == "rejected":
+                class_request.status = "rejected"
+
+            class_request.save()
+            return redirect('index')
+        except ClassRequest.DoesNotExist:
+            return render(request, "error.html", {'error': 'Solicitud no encontrada'})
+

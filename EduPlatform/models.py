@@ -88,7 +88,7 @@ class ClassRequest(models.Model):
     requested_class = models.ForeignKey(Classes, on_delete=models.CASCADE)
     status = models.CharField(
         max_length=10,
-        choices=[('pending', 'Pendiente'), ('accepted', 'Aceptada'), ('rejected', ('Rechazada'))],
+        choices=[('pending', 'Pendiente'), ('accepted', 'Aceptada'), ('rejected', 'Rechazada')],
         default='pending'
     )
     
