@@ -6,27 +6,31 @@ from .models import TeacherProfile, StudentProfile, Location, Classes, Availabil
 
 
 class UserForm(forms.ModelForm):
-    password1 = forms.CharField(widget=forms.PasswordInput, label='Contraseña', required=True)
-    password2 = forms.CharField(widget=forms.PasswordInput, label='Confirmar contraseña', required=True)
-    
+    password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+                                label='Contraseña', required=True)
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+                                label='Confirmar contraseña', required=True)
+
     ROLE_CHOICES = [
         ('', 'Seleccione un rol'),
         ('teacher', 'Profesor'),
         ('student', 'Estudiante'),
     ]
-    
-    role = forms.ChoiceField(choices=ROLE_CHOICES, label='Rol', required=True)
+
+    role = forms.ChoiceField(choices=ROLE_CHOICES, label='Rol',
+                             required=True,
+                             widget=forms.Select(attrs={'class': 'form-select'}))
     # EL CAMPO DE ROLE NO ES UN ATRIBUTO(COLUMNA) DE LA TABLA USER, SOLO SE USA PARA ASIGNACIÓN DE GRUPO
     # EN LA FUNCIÓN create_profile DE signals.py
 
     class Meta:
-        model   = User
-        fields  = ['first_name', 'last_name', 'email', 'username', ]
+        model = User
+        fields = ['first_name', 'last_name', 'email', 'username', ]
         widgets = {
-            'first_name': forms.TextInput(),
-            'last_name': forms.TextInput(),
-            'email': forms.EmailInput(),
-            'username': forms.TextInput(),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
         }
         labels = {
             'first_name': 'Nombre',
@@ -40,12 +44,12 @@ class UserForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        
+
         password1 = cleaned_data.get('password1')
         password2 = cleaned_data.get('password2')
-        
-        first_name  = cleaned_data.get('first_name')
-        last_name  = cleaned_data.get('last_name')
+
+        first_name = cleaned_data.get('first_name')
+        last_name = cleaned_data.get('last_name')
         if first_name:
             cleaned_data['first_name'] = first_name.upper()
         if last_name:
@@ -55,17 +59,15 @@ class UserForm(forms.ModelForm):
         if email:
             cleaned_data['email'] = email.lower()
 
-            
-
         if password1 and password1 != password2:
             self.add_error('password2', 'Las contraseñas no coinciden')
 
         return cleaned_data
-        
 
-        # Group inclusion must be done after user is saved            
+        # Group inclusion must be done after user is saved
+
     def save(self, commit=False):
-        new_user =  super().save(commit=False)
+        new_user = super().save(commit=False)
         new_user.set_password(self.cleaned_data['password1'])
         new_user.save()
 
@@ -78,29 +80,35 @@ class UserForm(forms.ModelForm):
             group = Group.objects.get(name="Students")
             new_user.groups.add(group)
             StudentProfile.objects.create(user=new_user)
-        
-
 
         return new_user
 
 
 class TeacherForm(forms.ModelForm):
-    
+
     location = forms.ModelChoiceField(
         queryset=Location.objects.all(),
         empty_label="Seleccione una ubicación",
-        label="Ubicación"
+        label="Ubicación",
+        widget=forms.Select(attrs={'class': 'form-select'})
     )
 
     class Meta:
         model = TeacherProfile
-        fields = ['years_of_experience', 'educational_level', 'bio', 'location']
+        fields = ['years_of_experience',
+                  'educational_level', 'bio', 'location']
 
         labels = {
             'years_of_experience': 'Años de experiencia',
             'educational_level': 'Nivel educativo',
             'bio': 'Bio',
             'location': 'Ubicación'
+        }
+        
+        widgets = {
+            'years_of_experience': forms.NumberInput(attrs={'class': 'form-control'}),
+            'educational_level': forms.Select(attrs={'class': 'form-select'}),
+            'bio': forms.Textarea(attrs={'class': 'form-control'}),
         }
 
 
@@ -112,8 +120,11 @@ class StudentForm(forms.ModelForm):
         labels = {
             'interests': 'Intereses',
         }
+        widgets = {
+            'interests': forms.Textarea(attrs={'class': 'form-control'}),
+        }
 
-    
+
 class ClassForm(forms.ModelForm):
 
     class Meta:
@@ -121,11 +132,18 @@ class ClassForm(forms.ModelForm):
         # location debe vincularse con el dato del maestro
         fields = ['name', 'description', 'category', 'price']
         labels = {
-            'name' : 'Nombre', 
-            'description' : 'Descripción', 
-            'category' : 'Category', 
-            'price' : 'Precio'
+            'name': 'Nombre',
+            'description': 'Descripción',
+            'category': 'Category',
+            'price': 'Precio'
         }
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'category': forms.Select(attrs={'class': 'form-select'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
 
         def clean(self):
             cleaned_data = super().clean()
@@ -133,12 +151,11 @@ class ClassForm(forms.ModelForm):
 
             if name:
                 cleaned_data['name'] = name.capitalize()
-            return cleaned_data            
-    
+            return cleaned_data
 
 
 class AvailabilityForm(forms.ModelForm):
-    
+
     class Meta:
         model = Availability
         fields = ['days', 'start_time', 'end_time']
@@ -148,8 +165,11 @@ class AvailabilityForm(forms.ModelForm):
             'end_time': 'Hora de fin'
         }
         widgets = {
-            'start_time': forms.TimeInput(format='%H:%M', attrs={'type': 'time', 'step': 3600, 'min':'07:00', 'max':'19:00'}),
-            'end_time': forms.TimeInput(format='%H:%M', attrs={'type': 'time', 'step': 3600, 'min':'07:00', 'max':'19:00'}),
+            'days': forms.Select(attrs={'class': 'form-select'}),
+            'start_time': forms.TimeInput(format='%H:%M', attrs={'type': 'time', 'step': 3600, 'min': '07:00', 
+                                                                 'max': '19:00', 'class': 'form-control'}),
+            'end_time': forms.TimeInput(format='%H:%M', attrs={'type': 'time', 'step': 3600, 'min': '07:00',
+                                                                'max': '19:00', 'class': 'form-control'}),
         }
 
 
@@ -158,5 +178,3 @@ AvailabilityFormSet = modelformset_factory(
     form=AvailabilityForm,
     extra=1
 )
-
-

@@ -2,13 +2,24 @@
 
 {% block content %}
 <div class="container">
-    <h1>Iniciar sesión</h1>
-    <form action="" method="POST">
-        {% csrf_token %}
-        <input type="text" name="username" placeholder="Usuario">
-        <input type="password" name="password" placeholder="Contraseña">
-        <input type="submit" value="Iniciar sesión">
-    </form>
-    {{ error }}
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-4">
+            <h1 class="text-center">Iniciar sesión</h1>
+            <form action="" method="POST" class="mt-4">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <input type="text" name="username" placeholder="Usuario" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <input type="password" name="password" placeholder="Contraseña" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Iniciar sesión</button>
+            </form>
+            {% if error %}
+                <div class="alert alert-danger mt-3">{{ error }}</div>
+            {% endif %}
+            <a href="{% url 'sign_in' %}" class="d-block text-center mt-3">¿No tienes una cuenta?</a>
+        </div>
+    </div>
 </div>
 {% endblock  %}

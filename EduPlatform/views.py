@@ -83,13 +83,14 @@ def log_out(request):
 @login_required
 def home(request):
     user_role = [group.name for group in request.user.groups.all()]
-    requested_classes = ClassRequest.objects.values_list('requested_class', flat=True)
+    requested_classes = ClassRequest.objects.values_list(
+        'requested_class', flat=True)
 
     if "Teachers" in user_role:
         teacher = TeacherProfile.objects.get(user=request.user)
         classes = teacher.list_of_classes.exclude(id__in=requested_classes)
         class_requests = ClassRequest.objects.filter(
-            requested_class__teacher=teacher, 
+            requested_class__teacher=teacher,
             status='pending'
         )
 
@@ -100,7 +101,7 @@ def home(request):
         }
         return render(request, 'home.html', context)
 
-    classes = Classes.objects.exclude(id__in=requested_classes)  
+    classes = Classes.objects.exclude(id__in=requested_classes)
     class_requests = ClassRequest.objects.all()
     context = {
         'role': user_role,
@@ -110,15 +111,13 @@ def home(request):
     return render(request, 'home.html', context)
 
 
-
-
 # EDIT TEACHER PROFILE VIEW
 @login_required
 @redirecter_based_on_group(allowed_roles=["Teachers"])
 def edit_profile_teacher(request):
     if request.method == "GET":
         return render(request, 'edit/edit-teacher-profile.html',
-                    {'form': TeacherForm})
+                      {'form': TeacherForm})
     elif request.method == "POST":
         form = TeacherForm(request.POST, instance=request.user.teacherprofile)
         if form.is_valid():
@@ -127,7 +126,7 @@ def edit_profile_teacher(request):
     else:
         form = TeacherForm(request.POST, instance=request.user.teacherprofile)
     return render(request, 'edit/edit-teacher-profile.html',
-                    {'form': form})
+                  {'form': form})
 
 
 # EDIT STUDENT PROFILE VIEW
@@ -136,7 +135,7 @@ def edit_profile_teacher(request):
 def edit_profile_student(request):
     if request.method == "GET":
         return render(request, 'edit/edit-student-profile.html',
-                    {'form': StudentForm})
+                      {'form': StudentForm})
     elif request.method == "POST":
         form = StudentForm(request.POST, instance=request.user.studentprofile)
         if form.is_valid():
@@ -145,8 +144,6 @@ def edit_profile_student(request):
     else:
         form = StudentForm(instance=request.user.studentprofile)
     return render(request, 'edit/edit-student-profile.html', {'form': form})
-
-
 
 
 # DELETE USER, PROFILE AND DATA WITHIN THEM (Add some type of confimation both from front and backend)
@@ -168,8 +165,6 @@ def delete_user(request):
 
 
 # ---------------------------- CLASSES MANAGEMENT ----------------------------
-
-
 # CREAR CLASE
 @login_required
 @redirecter_based_on_group(allowed_roles=["Teachers"])
@@ -186,7 +181,7 @@ def create_class(request):
         if class_form.is_valid() and av_form.is_valid():
             new_class = class_form.save(commit=False)
 
-            teacher = TeacherProfile.objects.get(user=request.user)         
+            teacher = TeacherProfile.objects.get(user=request.user)
             new_class.location = teacher.location
             new_class.teacher = teacher
             new_class = class_form.save()
@@ -195,7 +190,6 @@ def create_class(request):
             availability_instance = av_form.save(commit=False)
             availability_instance.class_obj = new_class
             availability_instance.save()
-
 
             return redirect("home")
 
@@ -230,7 +224,7 @@ def filter_classes(request):
     class_name = response.get('className')
     city_name = response.get('cityName')
     educational_level = response.get('educationalLevel')
-    
+
     classes = Classes.objects.all()
 
     if class_name:
@@ -240,10 +234,9 @@ def filter_classes(request):
     if city_name:
         classes = classes.filter(location__city__icontains=city_name)
 
+    return render(request, "home.html", {'role': "Students", 'classes': classes})
 
-    return render(request, "home.html", {'role': "Students",'classes': classes})
 
-        
 # ENVIAR SOLICITUD DE REGISTRO A CLASE
 @login_required
 @redirecter_based_on_group(allowed_roles=["Students"])
@@ -258,7 +251,6 @@ def send_enrollment_request(request, class_id):
         )
 
         return redirect('index')
-    
 
 
 # ADMINISTRAR REGISTRO EN CLASES
@@ -280,4 +272,3 @@ def handle_enrollment_request(request):
             return redirect('index')
         except ClassRequest.DoesNotExist:
             return render(request, "error.html", {'error': 'Solicitud no encontrada'})
-

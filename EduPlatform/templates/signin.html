@@ -2,12 +2,20 @@
 
 {% block content %}
 <div class="container">
-    <h1>Registrarse</h1>
-    <form action="" method="POST">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Continuar">
-    </form>
-    {{ error }}
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-4">
+            <h1 class="text-center">Registrarse</h1>
+            <form action="" method="POST" class="mt-4">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ form }}
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Continuar</button>
+            </form>
+            {% if error %}
+                <div class="alert alert-danger mt-3">{{ error }}</div>
+            {% endif %}
+        </div>
+    </div>
 </div>
 {% endblock  %}

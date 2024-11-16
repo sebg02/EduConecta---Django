@@ -1,5 +1,83 @@
 {% extends "layouts/base.html" %}
 
 {% block content %}
-<h1>hola mundo</h1>
+
+<div class="container">
+    
+    
+    <div class="container my-5">
+        <div class="row">
+          <div class="col-md-8 mx-auto">
+            <p class="lead">
+              <strong>EduConecta</strong> es una plataforma innovadora que conecta a profesores y estudiantes, proporcionando información detallada sobre
+              materias, ubicación, modalidad (presencial u online) y precios. Facilita el acceso a una educación personalizada, permitiendo a los
+              usuarios encontrar el profesor ideal y gestionar sus clases de manera eficiente y conveniente.
+            </p>
+            <a class="btn btn-primary btn-lg" href="{% url 'log_in' %}">¡Empieza ahora!</a>
+          </div>
+        </div>
+    </div>
+      
+
+
+    <div class="container my-4">
+        <div class="row">
+          <div class="col-md-4 mb-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Matemáticas</h5>
+                <p class="card-text">Domina el apasionante mundo de los números</p>
+              </div>
+            </div>
+          </div>
+      
+          <div class="col-md-4 mb-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Ciencias Naturales</h5>
+                <p class="card-text">Explora el mundo natural y sus fenómenos.</p>
+              </div>
+            </div>
+          </div>
+      
+          <div class="col-md-4 mb-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Tecnología</h5>
+                <p class="card-text">Aprende sobre las innovaciones y avances tecnológicos que están cambiando el mundo.</p>
+              </div>
+            </div>
+          </div>
+      
+          <div class="col-md-4 mb-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Idiomas</h5>
+                <p class="card-text">Domina nuevos idiomas y abre puertas a nuevas culturas y oportunidades.</p>
+              </div>
+            </div>
+          </div>
+      
+          <div class="col-md-4 mb-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Arte</h5>
+                <p class="card-text">Explora tu creatividad a través de la pintura, la escultura y otras formas de expresión artística.</p>
+              </div>
+            </div>
+          </div>
+      
+          <div class="col-md-4 mb-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Manualidades</h5>
+                <p class="card-text">Crea obras únicas con tus manos, utilizando materiales simples y mucha imaginación.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+</div>
+
 {% endblock  %}

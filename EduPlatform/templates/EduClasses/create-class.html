@@ -1,13 +1,14 @@
 {% extends "layouts/base.html" %}
 
 {% block content %}
-<h3>hola mundo</h3>
-<form action="" method="POST">
-    {% csrf_token %}
-    {{ form }}
-    <hr>
-    {{ formset }}
-    <button>Enviar</button>
-</form>
+<div class="container mt-5">
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <hr>
+        {{ formset }}
+        <button type="submit" class="btn btn-primary mt-2">Enviar</button>
+    </form>
+</div>
 
 {% endblock  %}

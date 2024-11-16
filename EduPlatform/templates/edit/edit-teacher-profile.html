@@ -1,12 +1,14 @@
 {% extends 'layouts/base.html' %}
 
 {% block content %}
+<div class="container mt-5">
     <h1>Editar perfil</h1>
     <p>Modifique sus datos</p>
     <form action="" method="POST">
         {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Guardar">
+        {{ form }} <!-- Los campos ya tienen las clases de Bootstrap definidas en forms.py -->
+        <input type="submit" value="Guardar" class="btn btn-primary mt-3">
     </form>
+</div>
 
 {% endblock  %}
