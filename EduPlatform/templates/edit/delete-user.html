@@ -2,16 +2,23 @@
 
 {% block content %}
 
-<div class="container">
+<div class="container mt-5">
     <form action="" method="POST">
         {% csrf_token %}
         <p>¿Estás seguro de querer eliminar tu cuenta?</p>
-        <a href="{% url "home" %}" class="btn btn-secondary">Volver</a>
+        <label>Digite su contraseña para eliminar su cuenta:</label>
+        <input type="password" name="password">
+        
         <button type="submit" class="btn btn-danger" >Eliminar cuenta</button>
-    
-    
+        
+        
     </form>
+    {% if error %}
+    <div class="alert alert-danger mt-3" role="alert">
+        {{ error }}
+    </div>
+    {% endif %}
+    <a href="{% url "home" %}" class="btn btn-secondary mt-4">Volver</a>
 </div>
-{{ error }}
  
 {% endblock  %}

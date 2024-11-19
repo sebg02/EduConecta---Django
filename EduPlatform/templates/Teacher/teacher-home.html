@@ -5,7 +5,7 @@
 
     <hr>
     <h2>Gestión de solicitud de clases:</h2>
-    {% if not classes_requests %}
+    {% if not class_requests %}
       <p>Todavía no hay solicitudes de clases.</p>
     {% else %}
     
@@ -18,12 +18,16 @@
               <h6 class="card-subtitle mb-2 text-muted">{{ class_r.requested_class.get_category_display }}</h6>
               <p> Estudiante: {{ class_r.student }} </p>
               <p class="card-price">Precio: ${{ class_r.requested_class.price|floatformat:0 }}</p>
-              <form method="POST" action="{% url "handle-enrollment-request" %}" class="d-flex justify-content-between">
-                {% csrf_token %}
-                <input type="hidden" name="class_request_id" value="{{ class_r.id }}">  
-                <button class="btn btn-danger w-48" type="submit" name="status" value="rejected"> Rechazar</button>
-                <button class="btn btn-success w-48" type="submit" name="status" value="accepted"> Aceptar</button>
-              </form>
+              {% if class_r.status != "pending"  %}
+                <p> Estado: {{ class_r.get_status_display }} </p>
+              {% else %}  
+                <form method="POST" action="{% url "handle-enrollment-request" %}" class="d-flex justify-content-between">
+                  {% csrf_token %}
+                  <input type="hidden" name="class_request_id" value="{{ class_r.id }}">  
+                  <button class="btn btn-danger w-48" type="submit" name="status" value="rejected"> Rechazar</button>
+                  <button class="btn btn-success w-48" type="submit" name="status" value="accepted"> Aceptar</button>
+                </form>
+              {% endif %}
             </div>
           </div>
         </div>

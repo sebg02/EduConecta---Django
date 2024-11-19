@@ -4,10 +4,11 @@
     <hr>
 
     {% if my_classes %}
-        <h2>Mis clases:</h2>
+        <h2>Mis clases agendadas:</h2>
         {% for my_class in my_classes %}
         <div class="col">
-            <div class="card" style="width: 100%;">
+            {% comment %} Corregir esto,  {% endcomment %}
+            <div class="card m-2"> 
                 <div class="card-body">
                     <h5 class="card-title"> <b> {{ my_class.requested_class.name }} </b></h5>
                     <h6 class="card-subtitle mb-2 text-muted">{{ class.get_category_display }}</h6>

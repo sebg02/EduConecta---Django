@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import check_password
 from .forms import UserForm, StudentForm, TeacherForm, ClassForm, AvailabilityForm
 from .models import TeacherProfile, StudentProfile, Classes, ClassRequest
 from .decorators import unauthenticated_user, redirecter_based_on_group
@@ -88,10 +89,9 @@ def home(request):
 
     if "Teachers" in user_role:
         teacher = TeacherProfile.objects.get(user=request.user)
-        classes = teacher.list_of_classes.exclude(id__in=requested_classes)
+        classes = teacher.list_of_classes.exclude(id__in=requested_classes) 
         class_requests = ClassRequest.objects.filter(
-            requested_class__teacher=teacher,
-            status='pending'
+            requested_class__teacher=teacher
         )
 
         context = {
@@ -153,10 +153,16 @@ def edit_profile_student(request):
 def delete_user(request):
     if request.method == "POST":
         try:
+            raw_password = request.POST.get('password')
             user_to_delete = User.objects.get(username=request.user)
-            logout(request)
-            user_to_delete.delete()
-            return redirect('index')
+            user_password = user_to_delete.password
+            if check_password(raw_password, user_password):
+                logout(request)
+                user_to_delete.delete()
+                return redirect('index')
+            else:
+                return render(request, 'edit/delete-user.html',
+                          {'error': "Contraseña incorrecta"})
         except Exception as e:
             print(e)
             return render(request, 'edit/delete-user.html',
