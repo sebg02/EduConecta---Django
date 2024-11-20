@@ -1,3 +1,5 @@
 /venv
 db.sqlite3
 manage.py
+/EduPlatform/__pycache__
+/EduPlatform/migrations
