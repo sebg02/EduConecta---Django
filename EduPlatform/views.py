@@ -1,10 +1,11 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import check_password
 from .forms import UserForm, StudentForm, TeacherForm, ClassForm, AvailabilityForm
-from .models import TeacherProfile, StudentProfile, Classes, ClassRequest, Availability
+from .models import TeacherProfile, StudentProfile, Classes, ClassRequest, Availability, Location
 from .decorators import unauthenticated_user, redirecter_based_on_group
 
 
@@ -312,3 +313,47 @@ def handle_enrollment_request(request):
             return redirect('index')
         except ClassRequest.DoesNotExist:
             return render(request, "error.html", {'error': 'Solicitud no encontrada'})
+
+
+###
+
+def initialize_data(request):
+    # Crear grupos
+    Group.objects.get_or_create(name='Teachers')
+    Group.objects.get_or_create(name='Students')
+
+    # Crear ubicaciones
+    locations = [
+        {"city": "Bogotá"},
+        {"city": "Medellín"},
+        {"city": "Cali"},
+        {"city": "Barranquilla"},
+        {"city": "Cartagena"},
+        {"city": "Bucaramanga"},
+        {"city": "Pereira"},
+        {"city": "Santa Marta"},
+        {"city": "Manizales"},
+        {"city": "Cúcuta"},
+        {"city": "Ibagué"},
+        {"city": "Pasto"},
+        {"city": "Armenia"},
+        {"city": "Villavicencio"},
+        {"city": "Montería"},
+        {"city": "Neiva"},
+        {"city": "Tunja"},
+        {"city": "Sincelejo"},
+        {"city": "Popayán"},
+        {"city": "Riohacha"},
+        {"city": "Valledupar"},
+        {"city": "Quibdó"},
+        {"city": "Leticia"},
+        {"city": "Florencia"},
+        {"city": "San Andrés"},
+        {"city": "Otros"},
+        {"city": "En línea"},
+    ]
+
+    for loc in locations:
+        Location.objects.get_or_create(city=loc["city"], is_online=loc["is_online"])
+
+    return HttpResponse("Grupos y ubicaciones creados exitosamente.")
