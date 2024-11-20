@@ -9,25 +9,36 @@
                 <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'home' %}">Inicio</a>
+                            <a class="nav-link" href="{% url 'home' %}">Mi panel</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'delete-user' %}">Eliminar perfil</a>
-                        </li>
-                        {% for group in request.user.groups.all %}
-                        {% if group.name == "Students" %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'edit-student' %}">Editar perfil (Estudiante)</a>
-                        </li>
-                        {% elif group.name == "Teachers" %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'edit-teacher' %}">Editar perfil (Profesor)</a>
-                        </li>
-                        {% endif %}
-                        {% endfor %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'log_out' %}">Cerrar sesión</a>
-                        </li>
+                        
+                        <div class="dropdown">
+                            <a class="nav-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              Perfil <i class="bi bi-person-circle"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+
+                                
+                                {% for group in request.user.groups.all %}
+                                {% if group.name == "Students" %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'edit-student' %}">Editar perfil (Estudiante)</a>
+                                </li>
+                                {% elif group.name == "Teachers" %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'edit-teacher' %}">Editar perfil (Profesor)</a>
+                                </li>
+                                {% endif %}
+                                {% endfor %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'delete-user' %}">Eliminar perfil</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'log_out' %}">Cerrar sesión</a>
+                                </li>
+                            </ul>
+                        </div>
+                        
                     {% else %}
 
                         <li class="nav-item">

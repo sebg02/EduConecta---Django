@@ -12,6 +12,7 @@ urlpatterns = [
     path('delete-user/', views.delete_user, name='delete-user'),
     path('create-class/', views.create_class, name='create-class'),
     path('delete-class/<int:class_id>', views.delete_class, name='delete-class'),
+    path('edit-class/<int:class_id>', views.edit_class, name='edit-class'),
     path('filter-classes/', views.filter_classes, name='filter-classes'),
     path('send-enrollment-request/<int:class_id>', views.send_enrollment_request, name='send-enrollment-request'),
     path('handle-enrollment-request/', views.handle_enrollment_request, name='handle-enrollment-request'),

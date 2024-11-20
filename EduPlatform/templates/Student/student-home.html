@@ -5,23 +5,26 @@
 
     {% if my_classes %}
         <h2>Mis clases agendadas:</h2>
-        {% for my_class in my_classes %}
-        <div class="col">
-            {% comment %} Corregir esto,  {% endcomment %}
-            <div class="card m-2"> 
-                <div class="card-body">
-                    <h5 class="card-title"> <b> {{ my_class.requested_class.name }} </b></h5>
-                    <h6 class="card-subtitle mb-2 text-muted">{{ class.get_category_display }}</h6>
-                    <p class="card-teacher">Profesor:  <i>{{ my_class.requested_class.teacher }}</i></p>
-                    <p class="card-teacher">Ubicación:  <i>{{ my_class.requested_class.location }}</i></p>
-                    <p class="card-price">Precio: ${{ my_class.requested_class.price|floatformat:0 }}</p>
-                    
-                    <p>Estado: {{ my_class.get_status_display }}</p>
+        <div class="row row-cols-1 row-cols-md-3 g-3">
+            {% for my_class in my_classes %}
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><b>{{ my_class.requested_class.name }}</b></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ my_class.requested_class.get_category_display }}</h6>
+                        <p class="card-text">Profesor: <i>{{ my_class.requested_class.teacher }}</i></p>
+                        <p class="card-text">Ubicación: <i>{{ my_class.requested_class.location }}</i></p>
+                        <p class="card-text">Precio: ${{ my_class.requested_class.price|floatformat:0 }}</p>
+                        <p>Estado: {{ my_class.get_status_display }}</p>
+                    </div>
                 </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
     {% endif %}
+
+
+
     <h2 class="mt-4">Clases disponibles:</h2>
 
     {% include "layouts/filters.html" %}

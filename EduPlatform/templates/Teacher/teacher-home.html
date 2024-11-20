@@ -60,7 +60,7 @@
                     {% csrf_token %}
                     <button class="btn btn-danger w-48"> Eliminar</button>
                   </form>
-                  <button class="btn btn-secondary w-48">Editar</button>
+                  <a href="{% url "edit-class" class.id %}" class="btn btn-secondary w-48">Editar</a>
               </div>                        
             </div>
           </div>

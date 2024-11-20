@@ -23,7 +23,7 @@ class TeacherProfile(models.Model):
     educational_level = models.CharField(
         max_length=13, choices=LEVELS_OF_EDUCATION)
     bio = models.TextField()
-    location = models.OneToOneField(
+    location = models.ForeignKey(
         Location, on_delete=models.SET_NULL, null=True)
     list_of_classes = models.ManyToManyField('Classes')
 

@@ -4,7 +4,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import check_password
 from .forms import UserForm, StudentForm, TeacherForm, ClassForm, AvailabilityForm
-from .models import TeacherProfile, StudentProfile, Classes, ClassRequest
+from .models import TeacherProfile, StudentProfile, Classes, ClassRequest, Availability
 from .decorators import unauthenticated_user, redirecter_based_on_group
 
 
@@ -101,8 +101,9 @@ def home(request):
         }
         return render(request, 'home.html', context)
 
+    student = StudentProfile.objects.get(user=request.user)
     classes = Classes.objects.exclude(id__in=requested_classes)
-    class_requests = ClassRequest.objects.all()
+    class_requests = ClassRequest.objects.filter(student=student)
     context = {
         'role': user_role,
         'classes': classes,
@@ -209,7 +210,40 @@ def create_class(request):
 @login_required
 @redirecter_based_on_group(allowed_roles=["Teachers"])
 def edit_class(request, class_id):
-    pass
+    class_instance = Classes.objects.get(id=class_id)
+    availability_instance = Availability.objects.get(class_obj=class_instance)
+    context = {
+            'form': ClassForm(instance=class_instance),
+            'formset': AvailabilityForm(instance=availability_instance)
+    }
+    teacher = TeacherProfile.objects.get(user=request.user)
+    if request.method == "GET":
+        if class_instance.teacher == teacher: 
+            return render(request, 'EduClasses/edit-class.html', context)
+        else:
+            return redirect("home")
+    elif request.method == "POST":
+        class_form = ClassForm(request.POST, instance=class_instance)
+        av_form = AvailabilityForm(request.POST, instance=availability_instance)
+
+        if class_form.is_valid() and av_form.is_valid():
+
+            updated_class = class_form.save(commit=False)
+            updated_class.location = teacher.location
+            updated_class.teacher = teacher
+            updated_class.save()
+
+            teacher.list_of_classes.add(updated_class)
+            upd_av = av_form.save(commit=False)
+            upd_av.class_obj = updated_class
+            upd_av.save()
+            
+            
+            return redirect("home")
+        return render(request, 'EduClasses/edit-class.html', context)
+        
+        
+
 
 
 # ELIMINAR CLASE
