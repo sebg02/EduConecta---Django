@@ -354,6 +354,6 @@ def initialize_data(request):
     ]
 
     for loc in locations:
-        Location.objects.get_or_create(city=loc["city"], is_online=loc["is_online"])
+        Location.objects.get_or_create(city=loc["city"])
 
     return HttpResponse("Grupos y ubicaciones creados exitosamente.")
